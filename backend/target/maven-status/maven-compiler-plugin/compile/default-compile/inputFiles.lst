@@ -1,0 +1,9 @@
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/repository/UserRepository.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/model/User.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/BackendApplication.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/repository/ExpenseRepository.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/security/JWTUtility.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/controller/ExpController.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/controller/AuthController.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/model/Expense.java
+/Users/gordonpan/IdeaProjects/Smart-Expense-Tracker/backend/src/main/java/com/expensetracker/security/SecurityConfig.java

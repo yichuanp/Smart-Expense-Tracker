@@ -1,0 +1,110 @@
+/* src/components/Login.css */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-image: url('../assets/white_background.jpeg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+label {
+  color: #333333;
+  font-size: 16px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: bold;
+}
+
+.login-container {
+  width: 1250px;
+  height: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #FFFFFF;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 75px;
+  margin-left: 100px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: bold;
+  color: #000000;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  margin-right: 15px;
+  margin-left: 100px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #f8f8f8;
+  font-family: 'Figtree', sans-serif;
+  font-size: 14px;
+  color: #000000;
+}
+
+input:focus {
+  border-color: #000;
+  outline: none;
+}
+
+.login-container .login-button {
+  width: 300px;
+  height: 50px;
+  margin-left: 100px;
+  background-color: #D5BDAF;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Figtree', sans-serif;
+  font-weight: bold;
+  color: #000000;
+  box-sizing: border-box;
+  font-size: 18px;
+}
+
+.login-container .login-button:hover {
+  background-color: #D5BDAF;
+}
+
+.forgot-password {
+  background: none;
+  border: none;
+  color: #000000; /* or any link color */
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Figtree', sans-serif;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.forgot-password:hover {
+  color: #0056b3;
+}
