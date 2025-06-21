@@ -1,16 +1,72 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import './Dashboard.css';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+function getMonthlySpending(expenses) {
+  const monthlyTotals = {};
+
+  expenses.forEach(exp => {
+    const date = new Date(exp.date);
+    const month = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+
+    if (!monthlyTotals[month]) monthlyTotals[month] = 0;
+    monthlyTotals[month] += parseFloat(exp.amount);
+  });
+
+  const labels = Object.keys(monthlyTotals);
+  const data = Object.values(monthlyTotals);
+
+  return {
+    labels,
+    datasets: [
+      {
+        label: 'Monthly Spending ($)',
+        data,
+        backgroundColor: '#008080',
+      },
+    ],
+  };
+}
+
+function getDailySpending(expenses) {
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const dailyTotals = {};
+
+  expenses.forEach(exp => {
+    const date = new Date(exp.date);
+    if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+      const day = date.getDate();
+      if (!dailyTotals[day]) dailyTotals[day] = 0;
+      dailyTotals[day] += parseFloat(exp.amount);
+    }
+  });
+
+  const days = Array.from({ length: 31 }, (_, i) => i + 1); // max days in month
+  const data = days.map(day => dailyTotals[day] || 0);
+
+  return {
+    labels: days,
+    datasets: [
+      {
+        label: 'Daily Spending ($)',
+        data,
+        backgroundColor: '#FFA07A',
+      },
+    ],
+  };
+}
+
 
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    amount: '',
-    category: '',
-    date: '',
-    recurring: false
-  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -36,67 +92,49 @@ function Dashboard() {
     fetchExpenses();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleAddExpense = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    try {
-      const response = await fetch(`http://localhost:8080/api/exp/addExpense?token=${token}`
-      ,{
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...formData, token })
-      });
-
-      if (response.ok) {
-        setFormData({ title: '', amount: '', category: '', date: '', recurring: false });
-        setShowForm(false);
-        const newExpense = await response.json();
-        setExpenses(prev => [...prev, newExpense]);
-      } else {
-        console.error("Failed to add expense");
-      }
-    } catch (error) {
-      console.error("Error adding expense:", error);
-    }
-  };
-
-  return (
-    <div className="dashboard-container">
-      <h2>Your Expenses</h2>
-      <ul>
-        {expenses.map(exp => (
-          <li key={exp.id}>{exp.title} - ${exp.amount}</li>
-        ))}
-      </ul>
-
-      {!showForm ? (
-        <button onClick={() => setShowForm(true)}>Add Expense</button>
-      ) : (
-        <form className="expense-form" onSubmit={handleAddExpense}>
-          <input type="text" name="title" value={formData.title} onChange={handleInputChange} placeholder="Title" required />
-          <input type="number" name="amount" value={formData.amount} onChange={handleInputChange} placeholder="Amount" step="0.01" required />
-          <input type="text" name="category" value={formData.category} onChange={handleInputChange} placeholder="Category" required />
-          <input type="date" name="date" value={formData.date} onChange={handleInputChange} required />
-          <label>
-            <input type="checkbox" name="recurring" checked={formData.recurring} onChange={handleInputChange} />
-            Recurring
-          </label>
-          <button type="submit">Submit</button>
-          <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
-        </form>
-      )}
+return (
+  <div className="dashboard-wrapper">
+    <div className="sidebar">
+      <div className="profile-photo"></div>
+      <button onClick={() => navigate('/dashboard')} className="sidebar-button">Home</button>
+      <button onClick={() => navigate('/profile')} className="sidebar-button">Profile</button>
+      <button onClick={() => navigate('/settings')} className="sidebar-button">Settings</button>
     </div>
-  );
+
+    <div className="dashboard-container">
+      <div className="item recent-expenses">
+        <div className="header">Recent Expenses</div>
+        <ul className="expense-list">
+        {expenses.slice(0,5).map((exp) => (<li key={exp.id}>
+            <span>{exp.title}</span>
+            <span>${parseFloat(exp.amount).toFixed(2)}</span>
+            </li>
+        ))}
+        </ul>
+      </div>
+
+      <div className="item quick-access">
+        <div className="header">Quick Access</div>
+        <button className="new-expense" onClick={() => navigate("/add-expense")}>
+          + Add Expense
+        </button>
+      </div>
+
+        <div className="item monthly-report">
+          <div className="header">Monthly Report</div>
+          <div className="monthly-spending">
+            <Bar data={getMonthlySpending(expenses)} />
+          </div>
+          <div className="daily-spending">
+            <Bar data={getDailySpending(expenses)} />
+          </div>
+
+        </div>
+
+    </div>
+  </div>
+);
+
 }
 
 export default Dashboard;
