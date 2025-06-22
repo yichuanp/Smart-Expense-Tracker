@@ -104,21 +104,22 @@ return (
     <div className="dashboard-container">
       <div className="item recent-expenses">
         <div className="header">Recent Expenses</div>
-        <ul className="expense-list">
-        {expenses.slice(0,5).map((exp) => (<li key={exp.id}>
-            <span>{exp.title}</span>
-            <span>${parseFloat(exp.amount).toFixed(2)}</span>
-            </li>
-        ))}
-        </ul>
+            <ul className="expense-list">
+              {expenses.slice(0, 5).map((exp) => (
+                <li key={exp.id}>
+                  <span>[{new Date(exp.date).toLocaleDateString()}] {exp.title}: ${parseFloat(exp.amount).toFixed(2)} ({exp.category})</span>
+                </li>
+              ))}
+            </ul>
       </div>
 
-      <div className="item quick-access">
-        <div className="header">Quick Access</div>
-        <button className="new-expense" onClick={() => navigate("/add-expense")}>
-          + Add Expense
-        </button>
-      </div>
+        <div className="item quick-access">
+          <div className="header">Quick Access</div>
+          <div className="quick-access-buttons">
+            <button onClick={() => navigate("/add-expenses")}>Add Expense</button>
+            <button onClick={() => navigate("/remove-expenses")}>Remove Expense</button>
+          </div>
+        </div>
 
         <div className="item monthly-report">
           <div className="header">Monthly Report</div>
