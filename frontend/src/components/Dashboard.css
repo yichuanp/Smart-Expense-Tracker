@@ -33,19 +33,27 @@
 
 /* EXPENSE LIST */
 .expense-list {
+  grid-row: 2 / 4;
+  grid-column: 1 / 7;
   list-style: none;
   padding: 0 20px;
   overflow-y: auto;
-  max-height: 150px;
+  max-height: 250px;
 }
 
 .expense-list li {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  padding-bottom: 5px;
+  flex-wrap: wrap;
+  gap: 20px;              /* space between each field */
   border-bottom: 1px solid #eee;
+  padding: 8px 0;
   font-size: 0.95rem;
+  width: 100%;            /* ensures li fills container */
+}
+
+.expense-list li span {
+  flex: 1 1 auto;         /* allow spans to grow/shrink as needed */
+  min-width: 100px;       /* prevent too small spans */
 }
 
 /* QUICK ACCESS CONTAINER */
@@ -67,18 +75,27 @@
     padding: 20px;
 }
 
-.quick-access .new-expense {
-      grid-row: 2 / 3;
-      grid-column: 2 / 4;
-      padding: 8px 16px;
-      margin-right: 10px;
-      font-weight: bold;
-      border: 2px solid #D3D3D3;
-      border-radius: 20px;
-      background-color: #FFFFFF;
-      color: black;
-      cursor: pointer;
+.quick-access-buttons {
+  grid-row: 2 / 3;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column; /* stack vertically */
+  align-items: flex-start; /* align to the left */
+  justify-content: center; /* center vertically in the grid cell */
+  gap: 10px; /* space between buttons */
+  padding-left: 20px; /* some left padding */
 }
+
+.quick-access-buttons button {
+  padding: 8px 16px;
+  font-weight: bold;
+  border: 2px solid #D3D3D3;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  color: black;
+  cursor: pointer;
+}
+
 
 /* MONTHLY REPORT CONTAINER */
 .monthly-report {
