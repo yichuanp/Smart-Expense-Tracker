@@ -1,16 +1,15 @@
 /* src/components/Dashboard.css */
 .dashboard-container {
-    width: 100vw;             /* Full viewport width */
-    height: 1250px;            /* Full viewport height */
-    box-sizing: border-box;   /* Include padding in width/height */
-    display: grid;
-    grid-template-rows: repeat(8, 100px); /* 8 rows, each 100px */
-    grid-template-columns: repeat(12, 1fr); /* 12 equal-width columns */
-    gap: 25px;
-    padding: 30px;
-    background-color: #D3D3D3;
-    font-family: 'Figtree', sans-serif;
-    font-weight: bold;
+  flex: 1; /* let it take up the rest of the width */
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 25px;
+  padding: 30px;
+  background-color: #D3D3D3;
+  font-family: 'Figtree', sans-serif;
+  font-weight: bold;
+  height: 100%;
 }
 
 /* RECENT EXPENSES CONTAINER*/
@@ -131,21 +130,22 @@
 
 /* SIDEBAR */
 .dashboard-wrapper {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
+    display: flex;
+    width: 100vw;
+    height: 100vh; /* make the wrapper full height of the viewport */
 }
 
 .sidebar {
-  width: 200px;
-  height: 1250px;
-  background-color: #2c3e50;
-  color: white;
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+    width: 200px;
+    height: 100%;
+    background-color: #2c3e50;
+    color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    align-self: stretch;
 }
 
 .profile-photo {

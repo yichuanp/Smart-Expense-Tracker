@@ -1,66 +1,82 @@
 package com.expensetracker.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
-@Table(name="expense")
+@Table(name = "expenses")
 public class Expense {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
-    private Double amount;
+    private double amount;
     private String category;
-    private LocalDate date;
-    private Boolean recurring;
+
+    @Temporal(TemporalType.DATE)
+    private Date date;
+
+    private boolean recurring;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Setters
-    public void setUser(User user){
-        this.user = user;
+    // Constructors
+    public Expense() {}
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
-    public void setId(Long id){
-        this.id = id;
+
+    public String getTitle() {
+        return title;
     }
-    public void setTitle(String title){
+
+    public void setTitle(String title) {
         this.title = title;
     }
-    public void setAmount(Double amount){
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
         this.amount = amount;
     }
-    public void setCategory(String category){
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
         this.category = category;
     }
-    public void setDate(LocalDate date){
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
         this.date = date;
     }
-    public void setRecurring(Boolean recurring){
+
+    public boolean isRecurring() {
+        return recurring;
+    }
+
+    public void setRecurring(boolean recurring) {
         this.recurring = recurring;
     }
 
-    // Getters
-    public User getUser(){
-        return this.user;
-    }
-    public Long getId(){
-        return this.id;
-    }
-    public String getTitle(){
-        return this.title;
-    }
-    public Double getAmount(){
-        return this.amount;
-    }
-    public String getCategory(){
-        return this.category;
-    }
-    public LocalDate getDate(){
-        return this.date;
-    }
-    public Boolean getRecurring(){
-        return this.recurring;
+    public User getUser() {
+        return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

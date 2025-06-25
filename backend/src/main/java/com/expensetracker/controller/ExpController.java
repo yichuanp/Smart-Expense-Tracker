@@ -52,4 +52,29 @@ public class ExpController {
         return ResponseEntity.ok(expense);
     }
 
+    @PostMapping("/removeMultiple")
+    public boolean removeMultipleExpenses(@RequestBody List<Long> ids, @RequestParam String token) {
+        JWTUtility jwtUtility = new JWTUtility();
+        String username = jwtUtility.getUsernameFromToken(token);
+        Optional<User> userOpt = userRepository.findByUsername(username);
+
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = userOpt.get();
+
+        ids.forEach(id -> {
+            Optional<Expense> exp = expenseRepository.findById(id);
+            exp.ifPresent(e -> {
+                if (e.getUser().getId().equals(user.getId())) {
+                    expenseRepository.delete(e);
+                }
+            });
+        });
+
+        return true;
+    }
+
+
 }

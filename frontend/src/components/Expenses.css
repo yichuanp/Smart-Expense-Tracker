@@ -113,3 +113,41 @@
 .expense-form button:hover {
   background-color: #006666;
 }
+
+.removal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.removal-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.removal-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.removal-list li.selected {
+  background-color: #ffcccc;
+}
+
+.delete-button {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c9302c;
+}

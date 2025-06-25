@@ -17,7 +17,7 @@ function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/reset-password" element={<Reset />} />
-      <Route path="/add-expenses" element={<Expenses />} />
+      <Route path="/expenses" element={<Expenses />} />
     </Routes>
   );
 }

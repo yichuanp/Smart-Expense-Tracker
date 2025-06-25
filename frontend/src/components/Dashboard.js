@@ -115,10 +115,14 @@ return (
 
         <div className="item quick-access">
           <div className="header">Quick Access</div>
-          <div className="quick-access-buttons">
-            <button onClick={() => navigate("/add-expenses")}>Add Expense</button>
-            <button onClick={() => navigate("/remove-expenses")}>Remove Expense</button>
-          </div>
+            <div className="quick-access-buttons">
+              <button onClick={() => navigate("/expenses", { state: { formType: 'add' } })}>
+                Add Expense
+              </button>
+              <button onClick={() => navigate("/expenses", { state: { formType: 'remove' } })}>
+                Remove Expense
+              </button>
+            </div>
         </div>
 
         <div className="item monthly-report">

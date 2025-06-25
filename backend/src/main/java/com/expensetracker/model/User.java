@@ -36,4 +36,7 @@ public class User {
         this.username = username;
     }
 
+    public Object getId() {
+        return this.id;
+    }
 }
