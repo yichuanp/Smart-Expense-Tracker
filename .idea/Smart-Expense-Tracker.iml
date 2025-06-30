@@ -19,5 +19,7 @@
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:6.2.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:6.2.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:3.2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.junit.jupiter:junit-jupiter-api:5.10.2" level="project" />
+    <orderEntry type="library" name="Maven: org.mockito:mockito-core:5.7.0" level="project" />
   </component>
 </module>

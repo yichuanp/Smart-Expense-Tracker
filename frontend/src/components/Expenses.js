@@ -150,6 +150,7 @@ function Expenses() {
             <input
               type="date"
               name="date"
+              aria-label="Date"
               value={formData.date}
               onChange={handleInputChange}
               required

@@ -1,1 +1,3 @@
 com/expensetracker/BackendApplicationTests.class
+com/expensetracker/controller/AuthControllerTest.class
+com/expensetracker/controller/ExpControllerTest.class

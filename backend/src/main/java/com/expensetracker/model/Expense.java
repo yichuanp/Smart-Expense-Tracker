@@ -79,4 +79,8 @@ public class Expense {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public void setId(long l) {
+        this.id = l;
+    }
 }

@@ -5,7 +5,6 @@ import com.expensetracker.model.User;
 import com.expensetracker.repository.ExpenseRepository;
 import com.expensetracker.repository.UserRepository;
 import com.expensetracker.security.JWTUtility;
-import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,37 +15,48 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/exp")
-@CrossOrigin(origins="http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ExpController {
 
-    @Autowired
-    private ExpenseRepository expenseRepository;
+    private final ExpenseRepository expenseRepository;
+    private final UserRepository userRepository;
+    private final JWTUtility jwtUtility;
 
     @Autowired
-    private UserRepository userRepository;
+    public ExpController(ExpenseRepository expenseRepository, UserRepository userRepository, JWTUtility jwtUtility) {
+        this.expenseRepository = expenseRepository;
+        this.userRepository = userRepository;
+        this.jwtUtility = jwtUtility;
+    }
 
     @PostMapping("/returnExpenses")
-    public ResponseEntity<List<Expense>> getAllExpenses(@RequestParam String token){
-        JWTUtility jwtUtility = new JWTUtility();
+    public ResponseEntity<List<Expense>> getAllExpenses(@RequestParam String token) {
         String username = jwtUtility.getUsernameFromToken(token);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         Optional<User> user = userRepository.findByUsername(username);
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         List<Expense> expenses = expenseRepository.findByUser(user.get());
-
         return ResponseEntity.ok(expenses);
     }
 
     @PostMapping("/addExpense")
-    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense, @RequestParam String token){
-        JWTUtility jwtUtility = new JWTUtility();
+    public ResponseEntity<Expense> addExpense(@RequestBody Expense expense, @RequestParam String token) {
         String username = jwtUtility.getUsernameFromToken(token);
-        Optional<User> user = userRepository.findByUsername(username);
-        if(user.isEmpty()){
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         expense.setUser(user.get());
         expenseRepository.save(expense);
         return ResponseEntity.ok(expense);
@@ -54,10 +64,12 @@ public class ExpController {
 
     @PostMapping("/removeMultiple")
     public boolean removeMultipleExpenses(@RequestBody List<Long> ids, @RequestParam String token) {
-        JWTUtility jwtUtility = new JWTUtility();
         String username = jwtUtility.getUsernameFromToken(token);
-        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (username == null) {
+            throw new RuntimeException("Invalid token");
+        }
 
+        Optional<User> userOpt = userRepository.findByUsername(username);
         if (userOpt.isEmpty()) {
             throw new RuntimeException("User not found");
         }
@@ -67,7 +79,7 @@ public class ExpController {
         ids.forEach(id -> {
             Optional<Expense> exp = expenseRepository.findById(id);
             exp.ifPresent(e -> {
-                if (e.getUser().getId().equals(user.getId())) {
+                if (e.getUser().getId() != null && e.getUser().getId().equals(user.getId())) {
                     expenseRepository.delete(e);
                 }
             });
@@ -75,6 +87,4 @@ public class ExpController {
 
         return true;
     }
-
-
 }
