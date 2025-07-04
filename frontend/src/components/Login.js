@@ -67,7 +67,7 @@ function Login() {
           <button
             type="button"
             className="create-account"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/signup")}
           >
             Don't have an account? Create an account here!
           </button>
