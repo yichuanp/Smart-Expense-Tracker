@@ -93,10 +93,12 @@ input:focus {
   background-color: #D5BDAF;
 }
 
+
+/* FORGOT PASSWORD */
 .forgot-password {
   background: none;
   border: none;
-  color: #000000; /* or any link color */
+  color: #000000;
   text-decoration: underline;
   cursor: pointer;
   font-size: 14px;
@@ -106,5 +108,26 @@ input:focus {
 }
 
 .forgot-password:hover {
+  color: #0056b3;
+}
+
+/* Sign Up Button */
+.create-account-container {
+  margin-left: 100px;
+  margin-top: 10px;
+}
+
+.create-account {
+  background: none;
+  border: none;
+  color: #000000;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Figtree', sans-serif;
+  padding: 0;
+}
+
+.create-account:hover {
   color: #0056b3;
 }
