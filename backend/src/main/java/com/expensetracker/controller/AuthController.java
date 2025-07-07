@@ -4,10 +4,18 @@ import com.expensetracker.model.User;
 import com.expensetracker.repository.UserRepository;
 import com.expensetracker.security.JWTUtility;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -136,7 +144,91 @@ public class AuthController {
         profileInfo.put("lastName", user.get().getLastName());
         profileInfo.put("email", user.get().getEmail());
         profileInfo.put("password", user.get().getPassword());
+        profileInfo.put("username", user.get().getUsername());
+        profileInfo.put("profilePicture", user.get().getProfilePicture());
 
         return ResponseEntity.ok(profileInfo);
     }
+
+    @PutMapping(value = "/updateProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updateProfile(
+            @RequestParam("token") String token,
+            @RequestParam("username") String newUsername,
+            @RequestParam("firstName") String newFirstName,
+            @RequestParam("lastName") String newLastName,
+            @RequestParam("email") String newEmail,
+            @RequestParam(value = "newPassword", required = false) String newPassword,
+            @RequestParam(value = "confirmPassword", required = false) String confirmPassword,
+            @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
+    ) {
+        String usernameFromToken = jwtUtility.getUsernameFromToken(token);
+        if (usernameFromToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
+        }
+
+        Optional<User> userOptional = userRepository.findByUsername(usernameFromToken);
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+
+        User user = userOptional.get();
+
+        // Validate basic fields
+        if (newFirstName == null || newLastName == null || newEmail == null || newUsername == null ||
+                newFirstName.trim().isEmpty() || newLastName.trim().isEmpty() || newEmail.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All required fields must be filled.");
+        }
+
+        // Check for email conflict
+        if (!newEmail.equals(user.getEmail())) {
+            if (userRepository.findByEmail(newEmail).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use.");
+            }
+        }
+
+        // Check for username conflict
+        if (!newUsername.equals(user.getUsername())) {
+            if (userRepository.findByUsername(newUsername).isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already in use.");
+            }
+        }
+
+        // Update password if present
+        if (newPassword != null && !newPassword.isEmpty()) {
+            if (!newPassword.equals(confirmPassword)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords do not match.");
+            }
+
+            if (!PasswordValidator(newPassword)) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password does not meet requirements.");
+            }
+
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.setPassword(hashedPassword);
+        }
+
+        // Save profile picture if present
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            String fileName = user.getUsername() + "_" + System.currentTimeMillis() + "_" + profilePicture.getOriginalFilename();
+            Path uploadPath = Paths.get("uploads");
+            try {
+                if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+                Files.copy(profilePicture.getInputStream(), uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+                user.setProfilePicture(fileName);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
+            }
+        }
+
+        user.setFirstName(newFirstName);
+        user.setLastName(newLastName);
+        user.setEmail(newEmail);
+        user.setUsername(newUsername);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Profile updated successfully.");
+    }
+
+
+
 }

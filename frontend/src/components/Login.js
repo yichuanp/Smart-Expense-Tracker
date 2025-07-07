@@ -26,8 +26,6 @@ function Login() {
             alert("Login Successful!");
             console.log("JWT Token: ", token);
             navigate("/dashboard");
-        } else if (response.status === 409) {
-            alert("Username already exists!");
         } else {
             alert("Something went wrong!");
         }

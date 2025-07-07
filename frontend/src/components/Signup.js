@@ -41,7 +41,7 @@ function Signup() {
       if (response.ok) {
         const data = await response.text();
         alert(data);
-        navigate("/dashboard");
+        navigate("/");
       } else if (response.status === 409) {
         alert("Username already exists!");
       } else {

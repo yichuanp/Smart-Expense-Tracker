@@ -3,6 +3,7 @@ com/expensetracker/security/JWTUtility.class
 com/expensetracker/controller/ExpController.class
 com/expensetracker/BackendApplication.class
 com/expensetracker/model/User.class
+com/expensetracker/config/WebConfig.class
 com/expensetracker/security/SecurityConfig.class
 com/expensetracker/repository/ExpenseRepository.class
 com/expensetracker/model/Expense.class

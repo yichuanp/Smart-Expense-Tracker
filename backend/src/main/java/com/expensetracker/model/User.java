@@ -20,6 +20,9 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Expense> expenses;
 
@@ -60,4 +63,8 @@ public class User {
     // EMAIL
     public String getEmail(){return this.email;}
     public void setEmail(String email){this.email = email;}
+
+    // PFP
+    public String getProfilePicture(){return this.profilePicture;}
+    public void setProfilePicture(String profilePicture){this.profilePicture = profilePicture;}
 }
