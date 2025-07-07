@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -25,19 +28,38 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
+        // Check if username already exists
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists!");
         }
 
-        if (PasswordValidator(user.getPassword())) {
-            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            user.setPassword(hashedPassword);
-            userRepository.save(user);
-            return ResponseEntity.ok(user);
+        // ✅ FIXED: Check if email already exists (correct repository method)
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email is already in use!");
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Invalid Password");
+        // Validate required fields
+        if (user.getFirstName() == null || user.getLastName() == null || user.getEmail() == null ||
+                user.getFirstName().trim().isEmpty() || user.getLastName().trim().isEmpty() || user.getEmail().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("All fields are required.");
+        }
+
+        // Validate password
+        if (!PasswordValidator(user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Invalid password. It must meet complexity requirements.");
+        }
+
+        // Hash password and save user
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+        userRepository.save(user);
+
+        // Create JWT Authentication Token
+        String token = jwtUtility.generateToken(user.getUsername());
+
+        return ResponseEntity.ok(token);
     }
+
 
     public static boolean PasswordValidator(String password) {
         if (password == null) {
@@ -95,5 +117,26 @@ public class AuthController {
         System.out.println("[SUCCESS] Password has been updated for user: " + user.getUsername());
         System.out.println("[DEBUG] New (hashed) password stored: " + hashedPassword);
         return ResponseEntity.ok("Password has been changed");
+    }
+
+    @GetMapping("/returnProfile")
+    public ResponseEntity<?> getProfile(@RequestParam String token) {
+        String username = jwtUtility.getUsernameFromToken(token);
+        if(username == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Map<String, Object> profileInfo = new HashMap<>();
+        profileInfo.put("firstName", user.get().getFirstName());
+        profileInfo.put("lastName", user.get().getLastName());
+        profileInfo.put("email", user.get().getEmail());
+        profileInfo.put("password", user.get().getPassword());
+
+        return ResponseEntity.ok(profileInfo);
     }
 }
