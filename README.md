@@ -50,7 +50,6 @@ smart-expense-tracker/
 ### DevOps / Deployment:
 - Docker & Docker Compose
 - GitHub Actions
-- AWS EC2 (Ubuntu)
 
 ---
 
@@ -82,13 +81,6 @@ docker-compose up --build
 
 ---
 
-## 🌐 Deployment Steps (AWS EC2)
-1. Create an EC2 instance (Ubuntu) and install Docker & Docker Compose.
-2. Set up GitHub Secrets: `EC2_HOST`, `EC2_SSH_KEY`
-3. GitHub Actions will build and SSH deploy on `git push`.
-
----
-
 ## 📄 TODO
 - [ ] Implement JWT-based auth in backend
 - [ ] Build frontend dashboard layout
@@ -103,7 +95,6 @@ docker-compose up --build
 - [React Docs](https://reactjs.org/docs/getting-started.html)
 - [Docker Docs](https://docs.docker.com/get-started/)
 - [GitHub Actions](https://docs.github.com/en/actions)
-- [AWS EC2 Setup](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html)
 
 ---
 
