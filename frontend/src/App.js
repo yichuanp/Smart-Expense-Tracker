@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Reset from './components/Reset';
 import Expenses from './components/Expenses';
+import Profile from './components/Profile'
 
 function AppRoutes() {
   const location = useLocation();
@@ -18,6 +19,7 @@ function AppRoutes() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/reset-password" element={<Reset />} />
       <Route path="/expenses" element={<Expenses />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }

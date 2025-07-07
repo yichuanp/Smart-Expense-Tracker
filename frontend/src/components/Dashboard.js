@@ -48,7 +48,7 @@ function getDailySpending(expenses) {
     }
   });
 
-  const days = Array.from({ length: 31 }, (_, i) => i + 1); // max days in month
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
   const data = days.map(day => dailyTotals[day] || 0);
 
   return {
@@ -63,9 +63,9 @@ function getDailySpending(expenses) {
   };
 }
 
-
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
+  const [userData, setUserData] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,40 +89,73 @@ function Dashboard() {
       }
     };
 
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const response = await fetch(`http://localhost:8080/api/auth/returnProfile?token=${token}`, {
+            method: 'GET'
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            setUserData(data);
+          } else {
+            console.error("Failed to fetch profile");
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+        }
+      }
+    };
+
     fetchExpenses();
+    fetchProfile();
   }, []);
 
-return (
-  <div className="dashboard-wrapper">
-    <div className="sidebar">
-      <div className="profile-photo"></div>
-      <button onClick={() => navigate('/dashboard')} className="sidebar-button">Home</button>
-      <button onClick={() => navigate('/profile')} className="sidebar-button">Profile</button>
-      <button onClick={() => navigate('/settings')} className="sidebar-button">Settings</button>
-    </div>
-
-    <div className="dashboard-container">
-      <div className="item recent-expenses">
-        <div className="header">Recent Expenses</div>
-            <ul className="expense-list">
-              {expenses.slice(0, 5).map((exp) => (
-                <li key={exp.id}>
-                  <span>[{new Date(exp.date).toLocaleDateString()}] {exp.title}: ${parseFloat(exp.amount).toFixed(2)} ({exp.category})</span>
-                </li>
-              ))}
-            </ul>
+  return (
+    <div className="dashboard-wrapper">
+      <div className="sidebar">
+        <div className="profile-photo">
+          {userData.profilePicture ? (
+            <img
+              src={`http://localhost:8080/uploads/${userData.profilePicture}`}
+              alt="Profile"
+            />
+          ) : (
+            <img
+              src="https://via.placeholder.com/100x100.png?text=User"
+              alt="Default"
+            />
+          )}
+        </div>
+        <button onClick={() => navigate('/dashboard')} className="sidebar-button">Home</button>
+        <button onClick={() => navigate('/profile')} className="sidebar-button">Profile</button>
+        <button onClick={() => navigate('/settings')} className="sidebar-button">Settings</button>
       </div>
+
+      <div className="dashboard-container">
+        <div className="item recent-expenses">
+          <div className="header">Recent Expenses</div>
+          <ul className="expense-list">
+            {expenses.slice(0, 5).map((exp) => (
+              <li key={exp.id}>
+                <span>[{new Date(exp.date).toLocaleDateString()}] {exp.title}: ${parseFloat(exp.amount).toFixed(2)} ({exp.category})</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="item quick-access">
           <div className="header">Quick Access</div>
-            <div className="quick-access-buttons">
-              <button onClick={() => navigate("/expenses", { state: { formType: 'add' } })}>
-                Add Expense
-              </button>
-              <button onClick={() => navigate("/expenses", { state: { formType: 'remove' } })}>
-                Remove Expense
-              </button>
-            </div>
+          <div className="quick-access-buttons">
+            <button onClick={() => navigate("/expenses", { state: { formType: 'add' } })}>
+              Add Expense
+            </button>
+            <button onClick={() => navigate("/expenses", { state: { formType: 'remove' } })}>
+              Remove Expense
+            </button>
+          </div>
         </div>
 
         <div className="item monthly-report">
@@ -133,13 +166,10 @@ return (
           <div className="daily-spending">
             <Bar data={getDailySpending(expenses)} />
           </div>
-
         </div>
-
+      </div>
     </div>
-  </div>
-);
-
+  );
 }
 
 export default Dashboard;

@@ -26,8 +26,6 @@ function Login() {
             alert("Login Successful!");
             console.log("JWT Token: ", token);
             navigate("/dashboard");
-        } else if (response.status === 409) {
-            alert("Username already exists!");
         } else {
             alert("Something went wrong!");
         }
@@ -63,6 +61,15 @@ function Login() {
         </div>
         <button type="submit" className="login-button">Login</button>
       </form>
+        <div className="create-account-container">
+          <button
+            type="button"
+            className="create-account"
+            onClick={() => navigate("/signup")}
+          >
+            Don't have an account? Create an account here!
+          </button>
+        </div>
     </div>
 
   );
